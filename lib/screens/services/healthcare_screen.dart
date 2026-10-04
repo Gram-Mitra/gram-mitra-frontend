@@ -60,15 +60,23 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text('Healthcare & Hospitals', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          'Healthcare & Hospitals',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: AppColors.primaryGreen,
-          labelColor: AppColors.primaryGreen,
-          unselectedLabelColor: AppColors.textMuted,
+          labelColor: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+          unselectedLabelColor: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
           labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           tabs: const [
             Tab(text: 'Human Healthcare (🏥)'),
@@ -81,16 +89,21 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
           : TabBarView(
               controller: _tabController,
               children: [
-                _buildFacilityList(_humanHospitals),
-                _buildFacilityList(_animalClinics),
+                _buildFacilityList(_humanHospitals, isDark),
+                _buildFacilityList(_animalClinics, isDark),
               ],
             ),
     );
   }
 
-  Widget _buildFacilityList(List<HealthcareFacility> list) {
+  Widget _buildFacilityList(List<HealthcareFacility> list, bool isDark) {
     if (list.isEmpty) {
-      return const Center(child: Text('No facilities found for this district.'));
+      return Center(
+        child: Text(
+          'No facilities found for this district.',
+          style: TextStyle(color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+        ),
+      );
     }
 
     return ListView.separated(
@@ -102,16 +115,18 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
         return Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.borderSubtle),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.02),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+            boxShadow: isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,10 +137,10 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
                   Expanded(
                     child: Text(
                       fac.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textCharcoal,
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                       ),
                     ),
                   ),
@@ -133,7 +148,7 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFEBEE),
+                        color: isDark ? AppColors.statusError.withOpacity(0.2) : const Color(0xFFFFEBEE),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Text(
@@ -150,12 +165,12 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textMuted),
+                  Icon(Icons.location_on_outlined, size: 14, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       '${fac.address ?? ''}, ${fac.village ?? ''}, ${fac.district ?? ''}',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                      style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                     ),
                   ),
                 ],
@@ -169,12 +184,16 @@ class _HealthcareScreenState extends State<HealthcareScreen> with SingleTickerPr
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.lightMint,
+                        color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         s,
-                        style: const TextStyle(fontSize: 11, color: AppColors.sageText, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? const Color(0xFFA5D6A7) : AppColors.sageText,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     );
                   }).toList(),

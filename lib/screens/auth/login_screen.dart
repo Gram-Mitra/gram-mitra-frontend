@@ -57,9 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final lang = Provider.of<AppStateProvider>(context).currentLanguage;
     final authProvider = Provider.of<AuthProvider>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -84,12 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Text(
+                    Text(
                       'Gram Mitra',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textCharcoal,
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                       ),
                     ),
                   ],
@@ -98,38 +98,39 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Welcome
                 Text(
                   AppTranslations.text(lang, 'welcome_title'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textCharcoal,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   AppTranslations.text(lang, 'tagline'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textMuted,
+                    color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                   ),
                 ),
                 const SizedBox(height: 32),
                 // Identifier Input
                 Text(
                   '${AppTranslations.text(lang, 'phone_number')} / Email',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textCharcoal,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                   ),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _identifierController,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                   decoration: InputDecoration(
                     hintText: 'e.g. 9876543210 or kisan@grammitra.in',
-                    prefixIcon: const Icon(Icons.person_outline_rounded, color: AppColors.textMuted),
-                    hintStyle: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 14),
+                    prefixIcon: Icon(Icons.person_outline_rounded, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+                    hintStyle: TextStyle(color: isDark ? AppColors.darkTextSecondary : const Color(0xFF9E9E9E), fontSize: 14),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -142,24 +143,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Password Input
                 Text(
                   AppTranslations.text(lang, 'password'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textCharcoal,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                   ),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
+                  style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                   decoration: InputDecoration(
                     hintText: 'Enter your password',
-                    prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
-                    hintStyle: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 14),
+                    prefixIcon: Icon(Icons.lock_outline_rounded, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+                    hintStyle: TextStyle(color: isDark ? AppColors.darkTextSecondary : const Color(0xFF9E9E9E), fontSize: 14),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                        color: AppColors.textMuted,
+                        color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                       ),
                       onPressed: () {
                         setState(() {
@@ -215,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'Do not have an account? ',
-                        style: const TextStyle(color: AppColors.textMuted, fontSize: 14),
+                        style: TextStyle(color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted, fontSize: 14),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -225,8 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           AppTranslations.text(lang, 'register'),
-                          style: const TextStyle(
-                            color: AppColors.primaryGreen,
+                          style: TextStyle(
+                            color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),

@@ -59,10 +59,18 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text('Krishi Marketplace', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          'Krishi Marketplace',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.primaryGreen))
@@ -75,9 +83,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? AppColors.darkCard : Colors.white,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.borderSubtle),
+                    border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                   ),
                   child: Row(
                     children: [
@@ -85,11 +93,15 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                         width: 56,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: AppColors.lightMint,
+                          color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Center(
-                          child: Icon(Icons.inventory_2_outlined, color: AppColors.primaryGreen, size: 28),
+                        child: Center(
+                          child: Icon(
+                            Icons.inventory_2_outlined,
+                            color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                            size: 28,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -99,20 +111,27 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                           children: [
                             Text(
                               p.name,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                              ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               '📍 ${p.location ?? 'Palghar'}',
-                              style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               '₹${p.price.toInt()} / ${p.unit}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primaryGreen,
+                                color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                               ),
                             ),
                           ],

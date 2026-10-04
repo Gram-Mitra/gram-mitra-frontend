@@ -10,13 +10,17 @@ class ConnectIotScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppStateProvider>(context);
     final data = appState.iotData;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Connect IoT • Smart Farm',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -28,9 +32,9 @@ class ConnectIotScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.borderSubtle),
+                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
               ),
               child: Row(
                 children: [
@@ -43,14 +47,21 @@ class ConnectIotScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     'Node #1 • Field Sensor Active',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                    ),
                   ),
                   const Spacer(),
-                  const Text(
+                  Text(
                     'Live Telemetry',
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -61,9 +72,9 @@ class ConnectIotScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.borderSubtle),
+                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,19 +82,27 @@ class ConnectIotScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Soil Moisture',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                        ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.lightMint,
+                          color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Optimal Range',
-                          style: TextStyle(fontSize: 12, color: AppColors.primaryGreen, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -93,10 +112,10 @@ class ConnectIotScreen extends StatelessWidget {
                     children: [
                       Text(
                         '${data.soilMoisture.toInt()}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryGreen,
+                          color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -109,14 +128,19 @@ class ConnectIotScreen extends StatelessWidget {
                               child: LinearProgressIndicator(
                                 value: data.soilMoisture / 100,
                                 minHeight: 12,
-                                backgroundColor: AppColors.borderSubtle,
-                                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                                backgroundColor: isDark ? AppColors.darkBorder : AppColors.borderSubtle,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 6),
-                            const Text(
+                            Text(
                               'Target for Rice/Kolam: 60 - 80%',
-                              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                              ),
                             ),
                           ],
                         ),
@@ -132,10 +156,14 @@ class ConnectIotScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: data.isPumpOn ? const Color(0xFFE8F5E9) : Colors.white,
+                color: data.isPumpOn
+                    ? (isDark ? const Color(0xFF1B3D23) : const Color(0xFFE8F5E9))
+                    : (isDark ? AppColors.darkCard : Colors.white),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: data.isPumpOn ? AppColors.primaryGreen : AppColors.borderSubtle,
+                  color: data.isPumpOn
+                      ? AppColors.primaryGreen
+                      : (isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                   width: data.isPumpOn ? 2 : 1,
                 ),
               ),
@@ -145,12 +173,16 @@ class ConnectIotScreen extends StatelessWidget {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      color: data.isPumpOn ? AppColors.primaryGreen : const Color(0xFFF5F5F5),
+                      color: data.isPumpOn
+                          ? AppColors.primaryGreen
+                          : (isDark ? AppColors.darkSurface : const Color(0xFFF5F5F5)),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.water_drop_rounded,
-                      color: data.isPumpOn ? Colors.white : AppColors.textMuted,
+                      color: data.isPumpOn
+                          ? Colors.white
+                          : (isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                       size: 28,
                     ),
                   ),
@@ -159,16 +191,22 @@ class ConnectIotScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Borewell Irrigation Pump',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           data.isPumpOn ? 'Pumping water to Field A' : 'Pump is currently OFF',
                           style: TextStyle(
                             fontSize: 12,
-                            color: data.isPumpOn ? AppColors.primaryGreen : AppColors.textMuted,
+                            color: data.isPumpOn
+                                ? (isDark ? const Color(0xFF81C784) : AppColors.primaryGreen)
+                                : (isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                             fontWeight: data.isPumpOn ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
@@ -188,9 +226,13 @@ class ConnectIotScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Soil Telemetry (Temp, N, P, K)
-            const Text(
+            Text(
               'Field Nutrients & Soil Stats',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -200,6 +242,7 @@ class ConnectIotScreen extends StatelessWidget {
                     label: 'Soil Temp',
                     value: '${data.soilTemperature}°C',
                     icon: Icons.thermostat_outlined,
+                    isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -208,6 +251,7 @@ class ConnectIotScreen extends StatelessWidget {
                     label: 'Water Tank',
                     value: '${data.tankLevel}% Full',
                     icon: Icons.water_damage_outlined,
+                    isDark: isDark,
                   ),
                 ),
               ],
@@ -215,11 +259,11 @@ class ConnectIotScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _buildNutrientTile('N (Nitrogen)', '${data.nitrogen} mg/kg')),
+                Expanded(child: _buildNutrientTile('N (Nitrogen)', '${data.nitrogen} mg/kg', isDark)),
                 const SizedBox(width: 8),
-                Expanded(child: _buildNutrientTile('P (Phosphorus)', '${data.phosphorus} mg/kg')),
+                Expanded(child: _buildNutrientTile('P (Phosphorus)', '${data.phosphorus} mg/kg', isDark)),
                 const SizedBox(width: 8),
-                Expanded(child: _buildNutrientTile('K (Potassium)', '${data.potassium} mg/kg')),
+                Expanded(child: _buildNutrientTile('K (Potassium)', '${data.potassium} mg/kg', isDark)),
               ],
             ),
           ],
@@ -228,40 +272,72 @@ class ConnectIotScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricTile({required String label, required String value, required IconData icon}) {
+  Widget _buildMetricTile({
+    required String label,
+    required String value,
+    required IconData icon,
+    required bool isDark,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.primaryGreen, size: 22),
+          Icon(icon, color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen, size: 22),
           const SizedBox(height: 10),
-          Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildNutrientTile(String label, String value) {
+  Widget _buildNutrientTile(String label, String value, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
       ),
       child: Column(
         children: [
-          Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.primaryGreen)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 10, color: AppColors.textMuted)),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 10,
+              color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+            ),
+          ),
         ],
       ),
     );

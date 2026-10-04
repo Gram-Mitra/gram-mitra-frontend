@@ -13,9 +13,9 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = Provider.of<AppStateProvider>(context).currentLanguage;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
@@ -28,14 +28,14 @@ class WelcomeScreen extends StatelessWidget {
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: AppColors.lightMint,
+                  color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.primaryGreen, width: 2.5),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.eco_rounded,
-                    color: AppColors.primaryGreen,
+                    color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                     size: 60,
                   ),
                 ),
@@ -45,10 +45,10 @@ class WelcomeScreen extends StatelessWidget {
               Text(
                 AppTranslations.text(lang, 'welcome_success'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textCharcoal,
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -57,10 +57,10 @@ class WelcomeScreen extends StatelessWidget {
                 Text(
                   'Namaste, $userName! 🙏',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primaryGreen,
+                    color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -68,9 +68,9 @@ class WelcomeScreen extends StatelessWidget {
               Text(
                 AppTranslations.text(lang, 'welcome_sub'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
-                  color: AppColors.textMuted,
+                  color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                   height: 1.4,
                 ),
               ),
