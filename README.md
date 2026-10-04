@@ -216,7 +216,7 @@ The backend URL is centrally defined in [`lib/core/constants/api_endpoints.dart`
 ```dart
 class ApiEndpoints {
   // Production AWS EC2 Host
-  static const String defaultHost = 'http://100.26.205.34:30442';
+  static const String defaultHost = 'http://ec2_ip4_id:assigned_port';
   ...
 }
 ```
