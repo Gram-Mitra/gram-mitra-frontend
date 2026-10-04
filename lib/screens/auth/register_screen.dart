@@ -108,17 +108,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final lang = Provider.of<AppStateProvider>(context).currentLanguage;
     final authProvider = Provider.of<AuthProvider>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: isDark ? AppColors.darkTextPrimary : null),
           onPressed: _onBack,
         ),
         title: Text(
           AppTranslations.text(lang, 'register'),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
         ),
       ),
       body: SafeArea(
@@ -135,17 +139,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Text(
                         _getStepTitle(lang),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryGreen,
+                          color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                         ),
                       ),
                       Text(
                         'Step $_currentStep of 3',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.textMuted,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -156,8 +160,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: _currentStep / 3,
-                      backgroundColor: AppColors.borderSubtle,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                      backgroundColor: isDark ? AppColors.darkBorder : AppColors.borderSubtle,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                      ),
                       minHeight: 6,
                     ),
                   ),
@@ -168,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: _buildStepForm(lang),
+                child: _buildStepForm(lang, isDark),
               ),
             ),
             // Action Buttons
@@ -184,15 +190,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: OutlinedButton(
                           onPressed: _onBack,
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: AppColors.borderSubtle),
+                            side: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
                           child: Text(
                             AppTranslations.text(lang, 'back'),
-                            style: const TextStyle(
-                              color: AppColors.textCharcoal,
+                            style: TextStyle(
+                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -254,35 +260,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Widget _buildStepForm(String lang) {
+  Widget _buildStepForm(String lang, bool isDark) {
     if (_currentStep == 1) {
       return Form(
         key: _formKeyStep1,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Create your login credentials',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Your phone number will be used for account authentication and recovery.',
-              style: TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.4),
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 24),
             // Phone Number (Required)
             Text(
               '${AppTranslations.text(lang, 'phone_number')} *',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. 9876543210',
-                prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.phone_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
               validator: (v) {
                 if (v == null || v.trim().isEmpty) return 'Phone number is required';
@@ -294,17 +313,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
             // Password (Required, min 6 chars)
             Text(
               '${AppTranslations.text(lang, 'password')} *',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _passwordController,
               obscureText: _obscurePassword,
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
               decoration: InputDecoration(
                 hintText: 'Minimum 6 characters',
-                prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.lock_outline_rounded, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                  icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                   onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                 ),
               ),
@@ -318,15 +343,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             // Email (Optional)
             Text(
               AppTranslations.text(lang, 'email'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. kisan@gmail.com',
-                prefixIcon: Icon(Icons.email_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.email_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
           ],
@@ -338,43 +368,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Personal Details',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Helps in personalizing rural welfare services for you.',
-              style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+              style: TextStyle(fontSize: 13, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
             ),
             const SizedBox(height: 24),
             // Full Name (profiles.full_name)
             Text(
               AppTranslations.text(lang, 'full_name'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. Ramesh Patil',
-                prefixIcon: Icon(Icons.person_outline_rounded, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.person_outline_rounded, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
             const SizedBox(height: 20),
             // Age (profiles.age)
             Text(
               AppTranslations.text(lang, 'age'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _ageController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. 42',
-                prefixIcon: Icon(Icons.calendar_today_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.calendar_today_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
           ],
@@ -386,55 +430,78 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Village Location',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Used to link your village to nearby healthcare, panchayat grievances, and mandi listings.',
-              style: TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.4),
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 24),
             // State (profiles.state)
             Text(
               AppTranslations.text(lang, 'state'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _stateController,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. Maharashtra',
-                prefixIcon: Icon(Icons.map_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.map_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
             const SizedBox(height: 20),
             // District (profiles.district)
             Text(
               AppTranslations.text(lang, 'district'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _districtController,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. Palghar',
-                prefixIcon: Icon(Icons.location_city_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.location_city_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
             const SizedBox(height: 20),
             // Village (profiles.village)
             Text(
               AppTranslations.text(lang, 'village'),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _villageController,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              decoration: InputDecoration(
                 hintText: 'e.g. Palghar',
-                prefixIcon: Icon(Icons.home_work_outlined, color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.home_work_outlined, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
               ),
             ),
           ],

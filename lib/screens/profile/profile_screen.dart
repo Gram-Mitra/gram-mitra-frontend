@@ -25,12 +25,17 @@ class ProfileScreen extends StatelessWidget {
     final district = user?.district ?? 'Palghar';
     final state = user?.state ?? 'Maharashtra';
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
         title: Text(
           AppTranslations.text(lang, 'nav_profile'),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -41,17 +46,17 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.borderSubtle),
+                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
               ),
               child: Row(
                 children: [
                   Container(
                     width: 64,
                     height: 64,
-                    decoration: const BoxDecoration(
-                      color: AppColors.lightMint,
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                       shape: BoxShape.circle,
                     ),
                     child: const Center(
@@ -69,18 +74,18 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         Text(
                           name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textCharcoal,
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           phone,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: AppColors.textMuted,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -91,9 +96,9 @@ class ProfileScreen extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 '$village, $district',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.primaryGreen,
+                                  color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -113,25 +118,25 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.borderSubtle),
+                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
               ),
               child: Column(
                 children: [
-                  _buildProfileRow('Full Name', name, Icons.badge_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('Phone', phone, Icons.phone_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('Email', email, Icons.email_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('Age', age, Icons.calendar_today_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('State', state, Icons.map_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('District', district, Icons.location_city_outlined),
-                  const Divider(height: 20, color: AppColors.borderSubtle),
-                  _buildProfileRow('Village', village, Icons.home_work_outlined),
+                  _buildProfileRow('Full Name', name, Icons.badge_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('Phone', phone, Icons.phone_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('Email', email, Icons.email_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('Age', age, Icons.calendar_today_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('State', state, Icons.map_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('District', district, Icons.location_city_outlined, isDark),
+                  Divider(height: 20, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                  _buildProfileRow('Village', village, Icons.home_work_outlined, isDark),
                 ],
               ),
             ),
@@ -141,30 +146,40 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.borderSubtle),
+                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
               ),
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.language_rounded, color: AppColors.primaryGreen),
-                    title: const Text('Change Language / भाषा बदलें'),
+                    title: Text(
+                      'Change Language / भाषा बदलें',
+                      style: TextStyle(
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                      ),
+                    ),
                     subtitle: Text(
                       lang == 'hi' ? 'हिंदी' : (lang == 'mr' ? 'मराठी' : 'English'),
-                      style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                      style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                     ),
-                    trailing: const Icon(Icons.chevron_right),
+                    trailing: Icon(Icons.chevron_right, color: isDark ? AppColors.darkTextSecondary : null),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const LanguageScreen(isInitialSelection: false)),
                       );
                     },
                   ),
-                  const Divider(height: 1, color: AppColors.borderSubtle),
+                  Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                   ListTile(
                     leading: const Icon(Icons.dark_mode_outlined, color: AppColors.primaryGreen),
-                    title: const Text('Dark Mode'),
+                    title: Text(
+                      'Dark Mode',
+                      style: TextStyle(
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                      ),
+                    ),
                     trailing: Switch(
                       value: appState.isDarkMode,
                       activeColor: AppColors.primaryGreen,
@@ -213,19 +228,23 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileRow(String label, String value, IconData icon) {
+  Widget _buildProfileRow(String label, String value, IconData icon, bool isDark) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: AppColors.textMuted),
+        Icon(icon, size: 20, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
         const SizedBox(width: 14),
         Text(
           label,
-          style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+          style: TextStyle(fontSize: 13, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
         ),
         const Spacer(),
         Text(
           value,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textCharcoal),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,5 +27,43 @@ void main() {
     await tester.pump();
 
     expect(find.byType(GramMitraApp), findsOneWidget);
+  });
+
+  testWidgets('Dark mode toggle updates ThemeMode correctly', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await StorageService.init();
+
+    final appState = AppStateProvider();
+    expect(appState.isDarkMode, isFalse);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider.value(value: appState),
+        ],
+        child: const GramMitraApp(),
+      ),
+    );
+
+    // Initial MaterialApp has ThemeMode.light
+    MaterialApp app = tester.widget(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.light);
+
+    // Toggle dark mode
+    await appState.toggleDarkMode();
+    await tester.pumpAndSettle();
+
+    app = tester.widget(find.byType(MaterialApp));
+    expect(appState.isDarkMode, isTrue);
+    expect(app.themeMode, ThemeMode.dark);
+
+    // Toggle back to light mode
+    await appState.toggleDarkMode();
+    await tester.pumpAndSettle();
+
+    app = tester.widget(find.byType(MaterialApp));
+    expect(appState.isDarkMode, isFalse);
+    expect(app.themeMode, ThemeMode.light);
   });
 }

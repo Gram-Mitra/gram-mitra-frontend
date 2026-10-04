@@ -82,8 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final userDistrict = user?.district ?? 'Palghar';
     final userState = user?.state ?? 'Maharashtra';
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,9 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
             // 1. TOP CURVED HEADER (Figma UI Exact Recreation)
             // ========================================================
             Container(
-              decoration: const BoxDecoration(
-                color: AppColors.primaryGreen,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkGreen : AppColors.primaryGreen,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(28),
                   bottomRight: Radius.circular(28),
                 ),
@@ -114,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: isDark ? AppColors.darkCard : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Center(
@@ -170,22 +171,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 30,
                               padding: const EdgeInsets.all(3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF388E3C),
+                                color: isDark ? AppColors.darkCard : const Color(0xFF388E3C),
                                 borderRadius: BorderRadius.circular(20),
+                                border: isDark ? Border.all(color: AppColors.darkBorder) : null,
                               ),
                               child: Align(
                                 alignment: appState.isDarkMode ? Alignment.centerRight : Alignment.centerLeft,
                                 child: Container(
                                   width: 24,
                                   height: 24,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
+                                  decoration: BoxDecoration(
+                                    color: isDark ? AppColors.primaryGreen : Colors.white,
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
                                     appState.isDarkMode ? Icons.nightlight_round : Icons.wb_sunny_rounded,
                                     size: 14,
-                                    color: AppColors.primaryGreen,
+                                    color: isDark ? Colors.white : AppColors.primaryGreen,
                                   ),
                                 ),
                               ),
@@ -198,15 +200,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         height: 52,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDark ? AppColors.darkCard : Colors.white,
                           borderRadius: BorderRadius.circular(26),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          border: isDark ? Border.all(color: AppColors.darkBorder) : null,
+                          boxShadow: isDark
+                              ? null
+                              : [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                         ),
                         child: Row(
                           children: [
@@ -220,8 +225,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               child: Text(
                                 AppTranslations.text(lang, 'search_placeholder'),
-                                style: const TextStyle(
-                                  color: Color(0xFF757575),
+                                style: TextStyle(
+                                  color: isDark ? AppColors.darkTextSecondary : const Color(0xFF757575),
                                   fontSize: 14,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -261,18 +266,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     '${AppTranslations.text(lang, 'good_morning')}, $userName 👋',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textCharcoal,
+                      color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     AppTranslations.text(lang, 'how_help'),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textMuted,
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                     ),
                   ),
                 ],
@@ -305,19 +310,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 2),
                           Text(
                             AppTranslations.text(lang, 'daily_insights'),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textCharcoal,
+                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                             ),
                           ),
                         ],
                       ),
                       Text(
                         AppTranslations.text(lang, 'swipe_explore'),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -328,15 +333,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     height: 200,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? AppColors.darkCard : Colors.white,
                       borderRadius: BorderRadius.circular(22),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 14,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+                      border: isDark ? Border.all(color: AppColors.darkBorder) : null,
+                      boxShadow: isDark
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 14,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Row(
@@ -344,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Left Terracotta Badge Section
                         Container(
                           width: 110,
-                          color: AppColors.terracottaDark,
+                          color: isDark ? const Color(0xFF5A372E) : AppColors.terracottaDark,
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
@@ -354,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 64,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: const Color(0xFFF7F5EE),
+                                  color: isDark ? const Color(0xFF1E2822) : const Color(0xFFF7F5EE),
                                   border: Border.all(
                                     color: const Color(0xFF8D6E63),
                                     width: 3,
@@ -433,10 +441,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         _currentMyth?.myth ?? 'Does planting by the full moon guarantee a better harvest?',
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.textCharcoal,
+                                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                                           height: 1.3,
                                         ),
                                       ),
@@ -445,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                                         decoration: BoxDecoration(
-                                          color: AppColors.lightMint,
+                                          color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                         child: Row(
@@ -462,9 +470,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 _currentMyth?.fact ?? 'Crop success depends on soil health, irrigation and sunlight—not lunar phases.',
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 12,
-                                                  color: AppColors.sageText,
+                                                  color: isDark ? const Color(0xFFA5D6A7) : AppColors.sageText,
                                                   fontWeight: FontWeight.w500,
                                                   height: 1.3,
                                                 ),
@@ -498,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: isDark ? AppColors.darkBorder : Colors.grey.shade300,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -507,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: isDark ? AppColors.darkBorder : Colors.grey.shade300,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -543,19 +551,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 2),
                           Text(
                             AppTranslations.text(lang, 'weather_today'),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textCharcoal,
+                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                             ),
                           ),
                         ],
                       ),
                       Text(
                         AppTranslations.text(lang, 'updated_recently'),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                         ),
                       ),
                     ],
@@ -594,7 +602,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const Icon(Icons.location_on_outlined, color: Colors.white, size: 14),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '$userVillage.toUpperCase() VILLAGE',
+                                  '${userVillage.toUpperCase()} VILLAGE',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
@@ -754,26 +762,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 2),
                   Text(
                     AppTranslations.text(lang, 'feedback_sub'),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textCharcoal,
+                      color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? AppColors.darkCard : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.borderSubtle),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                      boxShadow: isDark
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -783,28 +793,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: AppColors.lightMint,
+                                color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primaryGreen, size: 20),
                             ),
                             const SizedBox(width: 12),
-                            const Expanded(
+                            Expanded(
                               child: Text(
                                 'Help us improve Palghar amenities & services',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textCharcoal,
+                                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                                 ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'How satisfied are you with village services?',
-                          style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                          style: TextStyle(fontSize: 13, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                         ),
                         const SizedBox(height: 8),
                         // Star Rating
@@ -817,7 +827,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.only(right: 8),
                                 child: Icon(
                                   starNum <= _feedbackRating ? Icons.star_rounded : Icons.star_border_rounded,
-                                  color: starNum <= _feedbackRating ? AppColors.sunYellow : Colors.grey.shade300,
+                                  color: starNum <= _feedbackRating ? AppColors.sunYellow : (isDark ? AppColors.darkBorder : Colors.grey.shade300),
                                   size: 30,
                                 ),
                               ),
@@ -826,9 +836,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                         // Category Selection
-                        const Text(
+                        Text(
                           'Select Concern Category:',
-                          style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                          style: TextStyle(fontSize: 13, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                         ),
                         const SizedBox(height: 8),
                         Wrap(
@@ -840,17 +850,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: Text(cat),
                               selected: isSel,
                               onSelected: (_) => setState(() => _selectedCategory = cat),
-                              selectedColor: AppColors.lightMint,
+                              selectedColor: isDark ? AppColors.primaryGreen.withOpacity(0.3) : AppColors.lightMint,
                               labelStyle: TextStyle(
-                                color: isSel ? AppColors.primaryGreen : AppColors.textCharcoal,
+                                color: isSel
+                                    ? (isDark ? const Color(0xFF81C784) : AppColors.primaryGreen)
+                                    : (isDark ? AppColors.darkTextSecondary : AppColors.textCharcoal),
                                 fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
                                 fontSize: 12,
                               ),
-                              backgroundColor: const Color(0xFFF7F5EE),
+                              backgroundColor: isDark ? AppColors.darkSurface : const Color(0xFFF7F5EE),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 side: BorderSide(
-                                  color: isSel ? AppColors.primaryGreen : AppColors.borderSubtle,
+                                  color: isSel ? AppColors.primaryGreen : (isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                                 ),
                               ),
                             );
@@ -861,11 +873,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         TextField(
                           controller: _feedbackController,
                           maxLines: 3,
+                          style: TextStyle(
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                            fontSize: 14,
+                          ),
                           decoration: InputDecoration(
                             hintText: 'Share your suggestions or amenities needed in $userVillage...',
-                            hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF9E9E9E)),
+                            hintStyle: TextStyle(
+                              fontSize: 13,
+                              color: isDark ? AppColors.darkTextSecondary : const Color(0xFF9E9E9E),
+                            ),
                             filled: true,
-                            fillColor: const Color(0xFFF9FBF8),
+                            fillColor: isDark ? AppColors.darkSurface : const Color(0xFFF9FBF8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),

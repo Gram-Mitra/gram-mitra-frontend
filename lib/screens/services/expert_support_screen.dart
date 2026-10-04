@@ -43,22 +43,30 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final currentExpert = VoiceService.experts.firstWhere(
       (e) => e.id == _selectedExpertId,
       orElse: () => VoiceService.experts[0],
     );
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text('Expert Voice Support', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          'Expert Voice Support',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
+        ),
       ),
       body: Column(
         children: [
           // Expert Selector Horizontal Bar
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            color: Colors.white,
+            color: isDark ? AppColors.darkCard : Colors.white,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -75,7 +83,7 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
                                 ? Icons.grass_rounded
                                 : (exp.id == 'apiculture' ? Icons.hive_rounded : Icons.water_rounded),
                             size: 16,
-                            color: isSelected ? Colors.white : AppColors.primaryGreen,
+                            color: isSelected ? Colors.white : (isDark ? const Color(0xFF81C784) : AppColors.primaryGreen),
                           ),
                           const SizedBox(width: 6),
                           Text(exp.name),
@@ -84,11 +92,11 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
                       selected: isSelected,
                       selectedColor: AppColors.primaryGreen,
                       labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textCharcoal,
+                        color: isSelected ? Colors.white : (isDark ? AppColors.darkTextSecondary : AppColors.textCharcoal),
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
-                      backgroundColor: const Color(0xFFF7F5EE),
+                      backgroundColor: isDark ? AppColors.darkSurface : const Color(0xFFF7F5EE),
                       onSelected: (_) {
                         setState(() {
                           _selectedExpertId = exp.id;
@@ -108,7 +116,7 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             decoration: BoxDecoration(
-              color: AppColors.lightMint,
+              color: isDark ? AppColors.primaryGreen.withOpacity(0.18) : AppColors.lightMint,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.primaryGreen.withOpacity(0.3)),
             ),
@@ -117,12 +125,20 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
               children: [
                 Text(
                   currentExpert.role,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.primaryGreen),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   currentExpert.description,
-                  style: const TextStyle(fontSize: 12, color: AppColors.sageText, height: 1.3),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? const Color(0xFFA5D6A7) : AppColors.sageText,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ),
@@ -145,13 +161,20 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
                           const SizedBox(height: 12),
                           Text(
                             'Ask ${currentExpert.name}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textCharcoal),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             'Specialties: ${currentExpert.specializations.take(3).join(', ')}...',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                            ),
                           ),
                         ],
                       ),
@@ -170,8 +193,11 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
                           decoration: BoxDecoration(
-                            color: isUser ? AppColors.primaryGreen : Colors.white,
+                            color: isUser
+                                ? AppColors.primaryGreen
+                                : (isDark ? AppColors.darkCard : Colors.white),
                             borderRadius: BorderRadius.circular(16),
+                            border: (!isUser && isDark) ? Border.all(color: AppColors.darkBorder) : null,
                             boxShadow: [
                               BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 6),
                             ],
@@ -179,7 +205,9 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
                           child: Text(
                             msg['text'] ?? '',
                             style: TextStyle(
-                              color: isUser ? Colors.white : AppColors.textCharcoal,
+                              color: isUser
+                                  ? Colors.white
+                                  : (isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                               fontSize: 14,
                               height: 1.3,
                             ),
@@ -195,10 +223,13 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
               padding: const EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryGreen)),
-                  SizedBox(width: 10),
-                  Text('Consulting rural knowledge base...', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                children: [
+                  const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryGreen)),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Consulting rural knowledge base...',
+                    style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+                  ),
                 ],
               ),
             ),
@@ -206,17 +237,21 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
           // Input Bar with Mic & Send Action
           Container(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-            color: Colors.white,
+            color: isDark ? AppColors.darkCard : Colors.white,
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _queryController,
+                    style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                     decoration: InputDecoration(
                       hintText: 'Type your question for ${currentExpert.name}...',
-                      hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF9E9E9E)),
+                      hintStyle: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? AppColors.darkTextSecondary : const Color(0xFF9E9E9E),
+                      ),
                       filled: true,
-                      fillColor: const Color(0xFFF7F5EE),
+                      fillColor: isDark ? AppColors.darkSurface : const Color(0xFFF7F5EE),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     onSubmitted: (_) => _sendQuery(),

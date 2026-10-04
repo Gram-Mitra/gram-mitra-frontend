@@ -58,12 +58,16 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: widget.isInitialSelection
           ? null
           : AppBar(
-              title: Text(AppTranslations.text(_selectedLang, 'choose_language')),
+              title: Text(
+                AppTranslations.text(_selectedLang, 'choose_language'),
+                style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+              ),
             ),
       body: SafeArea(
         child: Padding(
@@ -75,19 +79,19 @@ class _LanguageScreenState extends State<LanguageScreen> {
               // Heading
               Text(
                 AppTranslations.text(_selectedLang, 'choose_language'),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textCharcoal,
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                 ),
               ),
               const SizedBox(height: 8),
               // Subtitle
               Text(
                 AppTranslations.text(_selectedLang, 'choose_language_sub'),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
-                  color: AppColors.textMuted,
+                  color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                   height: 1.4,
                 ),
               ),
@@ -112,13 +116,13 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDark ? AppColors.darkCard : Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected ? AppColors.primaryGreen : AppColors.borderSubtle,
+                            color: isSelected ? AppColors.primaryGreen : (isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                             width: isSelected ? 2 : 1,
                           ),
-                          boxShadow: isSelected
+                          boxShadow: isSelected && !isDark
                               ? [
                                   BoxShadow(
                                     color: AppColors.primaryGreen.withOpacity(0.12),
@@ -136,7 +140,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isSelected ? AppColors.primaryGreen : AppColors.textMuted,
+                                  color: isSelected ? AppColors.primaryGreen : (isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                                   width: 2,
                                 ),
                                 color: isSelected ? AppColors.primaryGreen : Colors.transparent,
@@ -158,15 +162,17 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? AppColors.primaryGreen : AppColors.textCharcoal,
+                                    color: isSelected
+                                        ? (isDark ? const Color(0xFF81C784) : AppColors.primaryGreen)
+                                        : (isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   lang['sub']!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
-                                    color: AppColors.textMuted,
+                                    color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                                   ),
                                 ),
                               ],

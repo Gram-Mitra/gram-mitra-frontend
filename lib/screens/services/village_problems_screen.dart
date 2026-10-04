@@ -44,10 +44,12 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
   }
 
   void _showReportDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? AppColors.darkCard : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -63,24 +65,38 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Report Village Grievance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                'Report Village Grievance',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                ),
+              ),
               const SizedBox(height: 6),
-              const Text('Your issue will be forwarded to the Palghar Gram Panchayat and district authorities.', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+              Text(
+                'Your issue will be forwarded to the Palghar Gram Panchayat and district authorities.',
+                style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+              ),
               const SizedBox(height: 16),
               TextField(
                 controller: _titleController,
-                decoration: const InputDecoration(
+                style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+                decoration: InputDecoration(
                   labelText: 'Issue Title',
                   hintText: 'e.g. Broken Handpump or Road Potholes',
+                  hintStyle: TextStyle(color: isDark ? AppColors.darkTextSecondary : null),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _descController,
                 maxLines: 3,
-                decoration: const InputDecoration(
+                style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
+                decoration: InputDecoration(
                   labelText: 'Description',
                   hintText: 'Explain the issue and exact landmark...',
+                  hintStyle: TextStyle(color: isDark ? AppColors.darkTextSecondary : null),
                 ),
               ),
               const SizedBox(height: 14),
@@ -89,6 +105,8 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: _selectedCategory,
+                      dropdownColor: isDark ? AppColors.darkCard : Colors.white,
+                      style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                       decoration: const InputDecoration(labelText: 'Category'),
                       items: const [
                         DropdownMenuItem(value: 'water', child: Text('Water Supply')),
@@ -104,6 +122,8 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: _selectedPriority,
+                      dropdownColor: isDark ? AppColors.darkCard : Colors.white,
+                      style: TextStyle(color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal),
                       decoration: const InputDecoration(labelText: 'Priority'),
                       items: const [
                         DropdownMenuItem(value: 'low', child: Text('Low')),
@@ -154,10 +174,18 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text('Village Grievances', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          'Village Grievances',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primaryGreen,
@@ -176,9 +204,9 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? AppColors.darkCard : Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.borderSubtle),
+                    border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,41 +217,55 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.lightMint,
+                              color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               prob.category.toUpperCase(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primaryGreen,
+                                color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                               ),
                             ),
                           ),
-                          _buildStatusBadge(prob.status),
+                          _buildStatusBadge(prob.status, isDark),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Text(
                         prob.title,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                        ),
                       ),
                       if (prob.description != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           prob.description!,
-                          style: const TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.3),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                            height: 1.3,
+                          ),
                         ),
                       ],
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textMuted),
+                          Icon(Icons.location_on_outlined, size: 14, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
                           const SizedBox(width: 4),
-                          Text('${prob.village ?? 'Palghar'}, ${prob.district ?? 'Palghar'}', style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                          Text(
+                            '${prob.village ?? 'Palghar'}, ${prob.district ?? 'Palghar'}',
+                            style: TextStyle(fontSize: 11, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+                          ),
                           const Spacer(),
-                          Text('Priority: ${prob.priority.toUpperCase()}', style: const TextStyle(fontSize: 11, color: AppColors.terracottaAccent, fontWeight: FontWeight.bold)),
+                          Text(
+                            'Priority: ${prob.priority.toUpperCase()}',
+                            style: const TextStyle(fontSize: 11, color: AppColors.terracottaAccent, fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ],
@@ -234,30 +276,30 @@ class _VillageProblemsScreenState extends State<VillageProblemsScreen> {
     );
   }
 
-  Widget _buildStatusBadge(String status) {
+  Widget _buildStatusBadge(String status, bool isDark) {
     Color bg;
     Color fg;
     String label;
 
     switch (status) {
       case 'resolved':
-        bg = const Color(0xFFE8F5E9);
-        fg = AppColors.statusSuccess;
+        bg = isDark ? AppColors.statusSuccess.withOpacity(0.2) : const Color(0xFFE8F5E9);
+        fg = isDark ? const Color(0xFF81C784) : AppColors.statusSuccess;
         label = 'Resolved';
         break;
       case 'in_progress':
-        bg = const Color(0xFFE0F7FA);
-        fg = AppColors.statusInfo;
+        bg = isDark ? AppColors.statusInfo.withOpacity(0.2) : const Color(0xFFE0F7FA);
+        fg = isDark ? const Color(0xFF4FC3F7) : AppColors.statusInfo;
         label = 'In Progress';
         break;
       case 'under_review':
-        bg = const Color(0xFFFFF3E0);
-        fg = AppColors.statusWarning;
+        bg = isDark ? AppColors.statusWarning.withOpacity(0.2) : const Color(0xFFFFF3E0);
+        fg = isDark ? const Color(0xFFFFB74D) : AppColors.statusWarning;
         label = 'Under Review';
         break;
       default:
-        bg = const Color(0xFFF5F5F5);
-        fg = AppColors.textMuted;
+        bg = isDark ? AppColors.darkSurface : const Color(0xFFF5F5F5);
+        fg = isDark ? AppColors.darkTextSecondary : AppColors.textMuted;
         label = 'Reported';
     }
 

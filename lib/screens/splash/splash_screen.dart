@@ -72,8 +72,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnim,
@@ -107,25 +108,25 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 const SizedBox(height: 24),
                 // App Name
-                const Text(
+                Text(
                   'Gram Mitra',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textCharcoal,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                     letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 8),
                 // Tagline
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Text(
                     'Connecting Rural Communities, Empowering Farmers',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textMuted,
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                       height: 1.4,
                       fontWeight: FontWeight.w500,
                     ),

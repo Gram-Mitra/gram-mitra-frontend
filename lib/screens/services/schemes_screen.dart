@@ -33,10 +33,18 @@ class _SchemesScreenState extends State<SchemesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        title: const Text('Government Schemes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(
+          'Government Schemes',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.primaryGreen))
@@ -49,9 +57,9 @@ class _SchemesScreenState extends State<SchemesScreen> {
                 return Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? AppColors.darkCard : Colors.white,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.borderSubtle),
+                    border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,49 +70,61 @@ class _SchemesScreenState extends State<SchemesScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.lightMint,
+                              color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               scheme.category ?? 'Welfare',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
-                                color: AppColors.primaryGreen,
+                                color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          const Icon(Icons.verified_outlined, size: 18, color: AppColors.primaryGreen),
+                          Icon(Icons.verified_outlined, size: 18, color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Text(
                         scheme.title,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textCharcoal),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         scheme.description,
-                        style: const TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.4),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                          height: 1.4,
+                        ),
                       ),
                       if (scheme.benefits != null) ...[
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF9FBF8),
+                            color: isDark ? AppColors.darkSurface : const Color(0xFFF9FBF8),
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.borderSubtle),
+                            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.monetization_on_outlined, size: 16, color: AppColors.primaryGreen),
+                              Icon(Icons.monetization_on_outlined, size: 16, color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Benefits: ${scheme.benefits}',
-                                  style: const TextStyle(fontSize: 12, color: AppColors.textCharcoal, fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ],
@@ -115,7 +135,10 @@ class _SchemesScreenState extends State<SchemesScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'Eligibility: ${scheme.eligibility}',
-                          style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                          ),
                         ),
                       ],
                     ],
