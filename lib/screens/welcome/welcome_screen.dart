@@ -23,20 +23,31 @@ class WelcomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              // Animated Sprout Circle Badge
+              // Animated Gram Mitra Logo Circle Badge
               Container(
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.primaryGreen, width: 2.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryGreen.withOpacity(0.2),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.eco_rounded,
-                    color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
-                    size: 60,
+                clipBehavior: Clip.antiAlias,
+                child: Image.asset(
+                  'assets/icons/app_logo.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Center(
+                    child: Icon(
+                      Icons.eco_rounded,
+                      color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+                      size: 60,
+                    ),
                   ),
                 ),
               ),

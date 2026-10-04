@@ -83,12 +83,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Organic Sprout Emblem
+                // Organic Sprout Emblem (Gram Mitra App Logo)
                 Container(
-                  width: 96,
-                  height: 96,
+                  width: 104,
+                  height: 104,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryGreen,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -98,11 +97,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       ),
                     ],
                   ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.eco_rounded,
-                      color: Colors.white,
-                      size: 52,
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.asset(
+                    'assets/icons/app_logo.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: AppColors.primaryGreen,
+                      child: const Center(
+                        child: Icon(
+                          Icons.eco_rounded,
+                          color: Colors.white,
+                          size: 52,
+                        ),
+                      ),
                     ),
                   ),
                 ),
