@@ -32,13 +32,4 @@ class AppColors {
   static const Color statusWarning = Color(0xFFED6C02);
   static const Color statusError = Color(0xFFD32F2F);
   static const Color statusInfo = Color(0xFF0288D1);
-
-  // Dark Theme Tokens (Deep Forest & Charcoal)
-  static const Color darkScaffoldBg = Color(0xFF111713);
-  static const Color darkCardBg = Color(0xFF1A231C);
-  static const Color darkCardElevated = Color(0xFF222C24);
-  static const Color darkBorder = Color(0xFF2A382D);
-  static const Color darkTextPrimary = Color(0xFFF1F5F2);
-  static const Color darkTextMuted = Color(0xFF91A395);
-  static const Color darkInputBg = Color(0xFF151C17);
 }
