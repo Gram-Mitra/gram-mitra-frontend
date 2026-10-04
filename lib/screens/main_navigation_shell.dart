@@ -35,69 +35,54 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppStateProvider>(context);
-    final lang = appState.currentLanguage;
-    final isDark = appState.isDarkMode;
-
-    final navBg = isDark ? AppColors.darkCardBg : Colors.white;
-    final borderColor = isDark ? AppColors.darkBorder : const Color(0xFFECEFE9);
+    final lang = Provider.of<AppStateProvider>(context).currentLanguage;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkScaffoldBg : AppColors.scaffoldBg,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: navBg,
-          border: Border(
-            top: BorderSide(color: borderColor, width: 1),
+          color: Colors.white,
+          border: const Border(
+            top: BorderSide(color: Color(0xFFECEFE9), width: 1),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.35 : 0.04),
+              color: Colors.black.withOpacity(0.04),
               blurRadius: 10,
               offset: const Offset(0, -3),
             ),
           ],
         ),
         child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 540),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavItem(
-                      index: 0,
-                      label: AppTranslations.text(lang, 'nav_home'),
-                      icon: Icons.home_rounded,
-                      isDark: isDark,
-                    ),
-                    _buildNavItem(
-                      index: 1,
-                      label: AppTranslations.text(lang, 'nav_iot'),
-                      icon: Icons.sensors_rounded,
-                      isDark: isDark,
-                    ),
-                    _buildNavItem(
-                      index: 2,
-                      label: AppTranslations.text(lang, 'nav_profile'),
-                      icon: Icons.person_rounded,
-                      isDark: isDark,
-                    ),
-                    _buildNavItem(
-                      index: 3,
-                      label: AppTranslations.text(lang, 'nav_services'),
-                      icon: Icons.menu_rounded,
-                      isDark: isDark,
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  index: 0,
+                  label: AppTranslations.text(lang, 'nav_home'),
+                  icon: Icons.home_rounded,
                 ),
-              ),
+                _buildNavItem(
+                  index: 1,
+                  label: AppTranslations.text(lang, 'nav_iot'),
+                  icon: Icons.sensors_rounded,
+                ),
+                _buildNavItem(
+                  index: 2,
+                  label: AppTranslations.text(lang, 'nav_profile'),
+                  icon: Icons.person_rounded,
+                ),
+                _buildNavItem(
+                  index: 3,
+                  label: AppTranslations.text(lang, 'nav_services'),
+                  icon: Icons.menu_rounded,
+                ),
+              ],
             ),
           ),
         ),
@@ -109,12 +94,8 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     required int index,
     required String label,
     required IconData icon,
-    required bool isDark,
   }) {
     final isSelected = _currentIndex == index;
-    final activeBg = isDark ? const Color(0xFF233628) : AppColors.lightMint;
-    final activeFg = isDark ? AppColors.forestHighlight : AppColors.primaryGreen;
-    final inactiveFg = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
 
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
@@ -123,7 +104,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? activeBg : Colors.transparent,
+          color: isSelected ? AppColors.lightMint : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -131,17 +112,16 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           children: [
             Icon(
               icon,
-              color: isSelected ? activeFg : inactiveFg,
+              color: isSelected ? AppColors.primaryGreen : AppColors.textMuted,
               size: 22,
             ),
             const SizedBox(height: 3),
             Text(
               label,
               style: TextStyle(
-                inherit: true,
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? activeFg : inactiveFg,
+                color: isSelected ? AppColors.primaryGreen : AppColors.textMuted,
               ),
             ),
           ],
