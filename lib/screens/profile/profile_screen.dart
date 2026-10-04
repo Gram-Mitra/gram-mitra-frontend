@@ -143,50 +143,54 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Settings & Preferences
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCard : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.language_rounded, color: AppColors.primaryGreen),
-                    title: Text(
-                      'Change Language / भाषा बदलें',
-                      style: TextStyle(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+            Material(
+              color: isDark ? AppColors.darkCard : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              clipBehavior: Clip.antiAlias,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.language_rounded, color: AppColors.primaryGreen),
+                      title: Text(
+                        'Change Language / भाषा बदलें',
+                        style: TextStyle(
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                        ),
+                      ),
+                      subtitle: Text(
+                        lang == 'hi' ? 'हिंदी' : (lang == 'mr' ? 'मराठी' : 'English'),
+                        style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
+                      ),
+                      trailing: Icon(Icons.chevron_right, color: isDark ? AppColors.darkTextSecondary : null),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const LanguageScreen(isInitialSelection: false)),
+                        );
+                      },
+                    ),
+                    Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
+                    ListTile(
+                      leading: const Icon(Icons.dark_mode_outlined, color: AppColors.primaryGreen),
+                      title: Text(
+                        'Dark Mode',
+                        style: TextStyle(
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                        ),
+                      ),
+                      trailing: Switch(
+                        value: appState.isDarkMode,
+                        activeColor: AppColors.primaryGreen,
+                        onChanged: (_) => appState.toggleDarkMode(),
                       ),
                     ),
-                    subtitle: Text(
-                      lang == 'hi' ? 'हिंदी' : (lang == 'mr' ? 'मराठी' : 'English'),
-                      style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
-                    ),
-                    trailing: Icon(Icons.chevron_right, color: isDark ? AppColors.darkTextSecondary : null),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const LanguageScreen(isInitialSelection: false)),
-                      );
-                    },
-                  ),
-                  Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.borderSubtle),
-                  ListTile(
-                    leading: const Icon(Icons.dark_mode_outlined, color: AppColors.primaryGreen),
-                    title: Text(
-                      'Dark Mode',
-                      style: TextStyle(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
-                      ),
-                    ),
-                    trailing: Switch(
-                      value: appState.isDarkMode,
-                      activeColor: AppColors.primaryGreen,
-                      onChanged: (_) => appState.toggleDarkMode(),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -237,13 +241,17 @@ class ProfileScreen extends StatelessWidget {
           label,
           style: TextStyle(fontSize: 13, color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted),
         ),
-        const Spacer(),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Header Row
                       Row(
                         children: [
-                          // Sprout Logo in rounded square badge
+                          // Gram Mitra Logo in rounded square badge
                           Container(
                             width: 44,
                             height: 44,
@@ -130,11 +130,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: isDark ? AppColors.darkCard : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.eco_rounded,
-                                color: AppColors.primaryGreen,
-                                size: 26,
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.asset(
+                              'assets/icons/app_logo.png',
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Center(
+                                child: Icon(
+                                  Icons.eco_rounded,
+                                  color: AppColors.primaryGreen,
+                                  size: 26,
+                                ),
                               ),
                             ),
                           ),
@@ -329,41 +334,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppTranslations.text(lang, 'know_better'),
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.8,
-                                  color: AppColors.primaryGreen,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppTranslations.text(lang, 'know_better'),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.8,
+                                    color: AppColors.primaryGreen,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppTranslations.text(lang, 'daily_insights'),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                                const SizedBox(height: 2),
+                                Text(
+                                  AppTranslations.text(lang, 'daily_insights'),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           // Swipe to explore text with Prev / Next arrow buttons
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 AppTranslations.text(lang, 'swipe_explore'),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 11.5,
                                   color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 4),
                               GestureDetector(
                                 onTap: _currentMythIndex > 0
                                     ? () => _insightsPageController.previousPage(
@@ -610,29 +623,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppTranslations.text(lang, 'farm_forecast'),
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.8,
-                              color: AppColors.primaryGreen,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppTranslations.text(lang, 'farm_forecast'),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.8,
+                                color: AppColors.primaryGreen,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            AppTranslations.text(lang, 'weather_today'),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                            const SizedBox(height: 2),
+                            Text(
+                              AppTranslations.text(lang, 'weather_today'),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
                         AppTranslations.text(lang, 'updated_recently'),
                         style: TextStyle(

@@ -39,28 +39,32 @@ class ConnectIotScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 12,
-                    height: 12,
+                    width: 10,
+                    height: 10,
                     decoration: const BoxDecoration(
                       color: AppColors.statusSuccess,
                       shape: BoxShape.circle,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Node #1 • Field Sensor Active',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Node #1 • Field Sensor Active',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.5,
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
                   Text(
                     'Live Telemetry',
                     style: TextStyle(
                       color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
-                      fontSize: 12,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -82,14 +86,18 @@ class ConnectIotScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Soil Moisture',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                      Expanded(
+                        child: Text(
+                          'Soil Moisture',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
@@ -290,20 +298,30 @@ class ConnectIotScreen extends StatelessWidget {
         children: [
           Icon(icon, color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen, size: 22),
           const SizedBox(height: 10),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+              ),
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+              ),
             ),
           ),
         ],
@@ -313,7 +331,7 @@ class ConnectIotScreen extends StatelessWidget {
 
   Widget _buildNutrientTile(String label, String value, bool isDark) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -321,21 +339,29 @@ class ConnectIotScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: isDark ? const Color(0xFF81C784) : AppColors.primaryGreen,
+              ),
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 10,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 10,
+                color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+              ),
             ),
           ),
         ],
