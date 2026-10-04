@@ -6,6 +6,7 @@ import '../../models/myth_fact.dart';
 import '../../providers/app_state_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/superstition_service.dart';
+import 'search_services_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,9 +16,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  MythFact? _currentMyth;
-  bool _isLoadingMyth = true;
-  int _mythIndex = 1;
+  final TextEditingController _searchController = TextEditingController();
+  final PageController _insightsPageController = PageController();
+  List<MythFact> _myths = List.from(SuperstitionService.defaultMyths);
+  int _currentMythIndex = 0;
   int _feedbackRating = 5;
   String _selectedCategory = 'Water Supply';
   final _feedbackController = TextEditingController();
@@ -34,24 +36,34 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchDailyInsight();
+    _fetchDailyInsights();
   }
 
   @override
   void dispose() {
+    _searchController.dispose();
+    _insightsPageController.dispose();
     _feedbackController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchDailyInsight() async {
-    setState(() => _isLoadingMyth = true);
-    final myth = await SuperstitionService.getRandomMyth();
-    if (mounted) {
+  Future<void> _fetchDailyInsights() async {
+    final list = await SuperstitionService.getAllMyths();
+    if (mounted && list.isNotEmpty) {
       setState(() {
-        _currentMyth = myth;
-        _isLoadingMyth = false;
+        _myths = list;
       });
     }
+  }
+
+  void _openSearch([String? query]) {
+    final q = query ?? _searchController.text.trim();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchServicesScreen(initialQuery: q.isNotEmpty ? q : null),
+      ),
+    );
   }
 
   void _submitFeedback() {
@@ -196,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      // Rounded Search Bar with Terracotta Button
+                      // Rounded Search Bar with Terracotta Button (Fully Functional)
                       Container(
                         height: 52,
                         decoration: BoxDecoration(
@@ -223,28 +235,46 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(
-                                AppTranslations.text(lang, 'search_placeholder'),
+                              child: TextField(
+                                controller: _searchController,
                                 style: TextStyle(
-                                  color: isDark ? AppColors.darkTextSecondary : const Color(0xFF757575),
                                   fontSize: 14,
+                                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
                                 ),
-                                overflow: TextOverflow.ellipsis,
+                                decoration: InputDecoration(
+                                  hintText: AppTranslations.text(lang, 'search_placeholder'),
+                                  hintStyle: TextStyle(
+                                    color: isDark ? AppColors.darkTextSecondary : const Color(0xFF757575),
+                                    fontSize: 14,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                                textInputAction: TextInputAction.search,
+                                onSubmitted: (val) => _openSearch(val),
                               ),
                             ),
-                            // Terracotta Search Icon Button
-                            Container(
-                              width: 44,
-                              height: 44,
-                              margin: const EdgeInsets.only(right: 4),
-                              decoration: BoxDecoration(
-                                color: AppColors.terracottaDark,
+                            // Terracotta Search Icon Button (Clickable)
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => _openSearch(),
                                 borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: const Icon(
-                                Icons.search,
-                                color: Colors.white,
-                                size: 20,
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  margin: const EdgeInsets.only(right: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.terracottaDark,
+                                    borderRadius: BorderRadius.circular(22),
+                                  ),
+                                  child: const Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -265,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${AppTranslations.text(lang, 'good_morning')}, $userName 👋',
+                    '${AppTranslations.text(lang, 'good_morning')}, $userName ',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -285,245 +315,289 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // ========================================================
-            // 2. DAILY INSIGHTS (MYTH VS FACT CAROUSEL)
+            // 2. DAILY INSIGHTS (MYTH VS FACT CAROUSEL FLOW)
             // ========================================================
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 22, 20, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Builder(
+              builder: (context) {
+                final displayMyths = _myths.isNotEmpty ? _myths : SuperstitionService.defaultMyths;
+
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 22, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            AppTranslations.text(lang, 'know_better'),
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.8,
-                              color: AppColors.primaryGreen,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppTranslations.text(lang, 'know_better'),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.8,
+                                  color: AppColors.primaryGreen,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppTranslations.text(lang, 'daily_insights'),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            AppTranslations.text(lang, 'daily_insights'),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
-                            ),
+                          // Swipe to explore text with Prev / Next arrow buttons
+                          Row(
+                            children: [
+                              Text(
+                                AppTranslations.text(lang, 'swipe_explore'),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: _currentMythIndex > 0
+                                    ? () => _insightsPageController.previousPage(
+                                          duration: const Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        )
+                                    : null,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: _currentMythIndex > 0
+                                        ? (isDark ? AppColors.darkSurface : const Color(0xFFE8F5E9))
+                                        : Colors.transparent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.chevron_left_rounded,
+                                    size: 18,
+                                    color: _currentMythIndex > 0
+                                        ? AppColors.primaryGreen
+                                        : (isDark ? AppColors.darkBorder : Colors.grey.shade400),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: _currentMythIndex < displayMyths.length - 1
+                                    ? () => _insightsPageController.nextPage(
+                                          duration: const Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        )
+                                    : null,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: _currentMythIndex < displayMyths.length - 1
+                                        ? (isDark ? AppColors.darkSurface : const Color(0xFFE8F5E9))
+                                        : Colors.transparent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 18,
+                                    color: _currentMythIndex < displayMyths.length - 1
+                                        ? AppColors.primaryGreen
+                                        : (isDark ? AppColors.darkBorder : Colors.grey.shade400),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      Text(
-                        AppTranslations.text(lang, 'swipe_explore'),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.textMuted,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  // Insights Card
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkCard : Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: isDark ? Border.all(color: AppColors.darkBorder) : null,
-                      boxShadow: isDark
-                          ? null
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 14,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Row(
-                      children: [
-                        // Left Terracotta Badge Section
-                        Container(
-                          width: 110,
-                          color: isDark ? const Color(0xFF5A372E) : AppColors.terracottaDark,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // Circular Sprout Emblem
-                              Container(
-                                width: 64,
-                                height: 64,
+                      const SizedBox(height: 12),
+                      // Swipeable Insights Carousel
+                      SizedBox(
+                        height: 200,
+                        child: PageView.builder(
+                          controller: _insightsPageController,
+                          itemCount: displayMyths.length,
+                          onPageChanged: (idx) {
+                            setState(() => _currentMythIndex = idx);
+                          },
+                          itemBuilder: (context, index) {
+                            final item = displayMyths[index];
+                            final itemNumber = index + 1;
+                            final numberStr = itemNumber < 10 ? '0$itemNumber' : '$itemNumber';
+
+                              return Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 2),
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isDark ? const Color(0xFF1E2822) : const Color(0xFFF7F5EE),
-                                  border: Border.all(
-                                    color: const Color(0xFF8D6E63),
-                                    width: 3,
-                                  ),
+                                  color: isDark ? AppColors.darkCard : Colors.white,
+                                  borderRadius: BorderRadius.circular(22),
+                                  border: isDark ? Border.all(color: AppColors.darkBorder) : null,
+                                  boxShadow: isDark
+                                      ? null
+                                      : [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.04),
+                                            blurRadius: 14,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
                                 ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.eco_rounded,
-                                    color: AppColors.primaryGreen,
-                                    size: 32,
-                                  ),
-                                ),
-                              ),
-                              // Watermark '01'
-                              Positioned(
-                                bottom: 10,
-                                left: 14,
-                                child: Text(
-                                  _mythIndex < 10 ? '0$_mythIndex' : '$_mythIndex',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white.withOpacity(0.35),
-                                  ),
-                                ),
-                              ),
-                              // Nav Arrow Left
-                              Positioned(
-                                left: 4,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _mythIndex = _mythIndex > 1 ? _mythIndex - 1 : 1;
-                                    });
-                                    _fetchDailyInsight();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.2),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(Icons.chevron_left, size: 18, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Right Myth & Fact Content Section
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: _isLoadingMyth
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: AppColors.primaryGreen,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        AppTranslations.text(lang, 'myth_of_day'),
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.6,
-                                          color: AppColors.terracottaAccent,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        _currentMyth?.myth ?? 'Does planting by the full moon guarantee a better harvest?',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      // Verified Green Fact Pill
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Icon(
-                                              Icons.check_circle_rounded,
-                                              size: 16,
-                                              color: AppColors.primaryGreen,
+                                clipBehavior: Clip.antiAlias,
+                                child: Row(
+                                  children: [
+                                    // Left Terracotta Badge Section
+                                    Container(
+                                      width: 105,
+                                      color: isDark ? const Color(0xFF5A372E) : AppColors.terracottaDark,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          // Circular Sprout Emblem
+                                          Container(
+                                            width: 58,
+                                            height: 58,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: isDark ? const Color(0xFF1E2822) : const Color(0xFFF7F5EE),
+                                              border: Border.all(
+                                                color: const Color(0xFF8D6E63),
+                                                width: 2.5,
+                                              ),
                                             ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                _currentMyth?.fact ?? 'Crop success depends on soil health, irrigation and sunlight—not lunar phases.',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: isDark ? const Color(0xFFA5D6A7) : AppColors.sageText,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.3,
-                                                ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.eco_rounded,
+                                                color: AppColors.primaryGreen,
+                                                size: 28,
+                                              ),
+                                            ),
+                                          ),
+                                          // Watermark Number ('01', '02', etc)
+                                          Positioned(
+                                            bottom: 8,
+                                            left: 12,
+                                            child: Text(
+                                              numberStr,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w900,
+                                                color: Colors.white.withOpacity(0.35),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // Right Myth & Fact Content Section
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(14),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              AppTranslations.text(lang, 'myth_of_day'),
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 0.6,
+                                                color: AppColors.terracottaAccent,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              item.myth,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 13.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: isDark ? AppColors.darkTextPrimary : AppColors.textCharcoal,
+                                                height: 1.25,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            // Verified Green Fact Pill
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                              decoration: BoxDecoration(
+                                                color: isDark ? AppColors.primaryGreen.withOpacity(0.2) : AppColors.lightMint,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.check_circle_rounded,
+                                                    size: 15,
+                                                    color: AppColors.primaryGreen,
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(
+                                                    child: Text(
+                                                      item.fact,
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 11.5,
+                                                        color: isDark ? const Color(0xFFA5D6A7) : AppColors.sageText,
+                                                        fontWeight: FontWeight.w500,
+                                                        height: 1.25,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(height: 10),
-                  // Pager Indicator Dots
+                  // Dynamic Pager Indicator Dots (Clickable & Animated)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 22,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryGreen,
-                          borderRadius: BorderRadius.circular(3),
+                    children: List.generate(displayMyths.length, (i) {
+                      final isSel = i == _currentMythIndex;
+                      return GestureDetector(
+                        onTap: () => _insightsPageController.animateToPage(
+                          i,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkBorder : Colors.grey.shade300,
-                          shape: BoxShape.circle,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          width: isSel ? 22 : 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: isSel
+                                ? AppColors.primaryGreen
+                                : (isDark ? AppColors.darkBorder : Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkBorder : Colors.grey.shade300,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
                 ],
               ),
-            ),
+            );
+          },
+        ),
 
             // ========================================================
             // 3. WEATHER TODAY CARD (Palghar Farm Forecast)
