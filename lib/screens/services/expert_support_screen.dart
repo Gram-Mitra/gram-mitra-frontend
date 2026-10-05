@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
+import '../../providers/app_state_provider.dart';
 import '../../services/voice_service.dart';
 
 class ExpertSupportScreen extends StatefulWidget {
@@ -31,7 +33,8 @@ class _ExpertSupportScreenState extends State<ExpertSupportScreen> {
     });
     _queryController.clear();
 
-    final response = await VoiceService.askExpert(_selectedExpertId, query);
+    final currentLang = Provider.of<AppStateProvider>(context, listen: false).currentLanguage;
+    final response = await VoiceService.askExpert(_selectedExpertId, query, targetLanguage: currentLang);
 
     if (mounted) {
       setState(() {

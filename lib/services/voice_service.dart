@@ -1,5 +1,6 @@
 import '../core/constants/api_endpoints.dart';
 import 'api_service.dart';
+import 'sarvam_service.dart';
 
 class ExpertTopic {
   final String id;
@@ -74,7 +75,12 @@ class VoiceService {
     ),
   ];
 
-  static Future<String> askExpert(String expertId, String query) async {
+  static Future<String> askExpert(
+    String expertId,
+    String query, {
+    String? targetLanguage,
+  }) async {
+    String answer = '';
     try {
       final response = await ApiService.post(ApiEndpoints.voiceQuery, {
         'query': query,
@@ -83,18 +89,34 @@ class VoiceService {
 
       if (response.success && response.data != null) {
         if (response.data is Map && response.data['textResponse'] != null) {
-          return response.data['textResponse'].toString();
+          answer = response.data['textResponse'].toString();
         }
       }
     } catch (_) {}
 
-    // Intelligent domain-specific consultation fallback
-    if (expertId == 'apiculture') {
-      return 'For beekeeping during humidity, ensure proper ventilation in the hive supers and inspect for wax moths weekly. Keep the brood chamber elevated from wet soil.';
-    } else if (expertId == 'pisciculture') {
-      return 'Maintain pond water pH between 7.5 and 8.2 using agricultural lime (200 kg/hectare). Ensure morning aeration during cloudy days to prevent low dissolved oxygen.';
-    } else {
-      return 'For Kharif crops in Palghar loam soil, balanced basal application of DAP and Potash prior to sowing ensures strong root anchorage against heavy rains.';
+    // Fallback if backend is unreachable or response is empty
+    if (answer.isEmpty) {
+      if (expertId == 'apiculture') {
+        answer = 'For beekeeping during humidity, ensure proper ventilation in the hive supers and inspect for wax moths weekly. Keep the brood chamber elevated from wet soil.';
+      } else if (expertId == 'pisciculture') {
+        answer = 'Maintain pond water pH between 7.5 and 8.2 using agricultural lime (200 kg/hectare). Ensure morning aeration during cloudy days to prevent low dissolved oxygen.';
+      } else {
+        answer = 'For Kharif crops in Palghar loam soil, balanced basal application of DAP and Potash prior to sowing ensures strong root anchorage against heavy rains.';
+      }
     }
+
+    // Translate answer into farmer's preferred language via Sarvam AI
+    if (targetLanguage != null && targetLanguage != 'en') {
+      try {
+        final translated = await SarvamService.translate(
+          text: answer,
+          targetLanguage: targetLanguage,
+          sourceLanguage: 'en',
+        );
+        return translated;
+      } catch (_) {}
+    }
+
+    return answer;
   }
 }

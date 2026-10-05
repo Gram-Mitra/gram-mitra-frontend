@@ -1,21 +1,11 @@
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import '../config/env_config.dart';
 
 /// API Endpoints mapping 1-to-1 to the Gram Mitra Node.js / Express backend
 class ApiEndpoints {
-  /// Resolves standard development host for local emulator or web/desktop
-  static String get defaultHost {
-    if (kIsWeb) return 'http://54.224.97.138:30442';
-    try {
-      if (Platform.isAndroid) {
-        // Standard Android emulator loopback alias
-        return 'http://54.224.97.138:30442';
-      }
-    } catch (_) {}
-    return 'http://54.224.97.138:30442';
-  }
+  /// Resolves standard backend host from .env / EnvConfig
+  static String get defaultHost => EnvConfig.ec2BackendUrl;
 
-  static String baseUrl = defaultHost;
+  static String get baseUrl => defaultHost;
 
   // Authentication & Unified Profiles (Supabase)
   static String get authRegister => '$baseUrl/api/v1/auth/register';

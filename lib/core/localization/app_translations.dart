@@ -1,3 +1,5 @@
+import '../../services/sarvam_service.dart';
+
 class AppTranslations {
   static const Map<String, Map<String, String>> _localizedValues = {
     'en': {
@@ -161,8 +163,81 @@ class AppTranslations {
     },
   };
 
+  // Dynamic runtime cache populated by Sarvam AI for languages not statically preloaded
+  static final Map<String, Map<String, String>> _dynamicCache = {};
+
+  /// Synchronous translation lookup:
+  /// 1. Dynamic cache (populated by Sarvam AI)
+  /// 2. Pre-bundled dictionary for the language
+  /// 3. English fallback
+  /// 4. Key itself
   static String text(String code, String key) {
-    final langMap = _localizedValues[code] ?? _localizedValues['en']!;
-    return langMap[key] ?? key;
+    if (_dynamicCache[code] != null && _dynamicCache[code]![key] != null) {
+      return _dynamicCache[code]![key]!;
+    }
+    final langMap = _localizedValues[code];
+    if (langMap != null && langMap[key] != null) {
+      return langMap[key]!;
+    }
+    return _localizedValues['en']?[key] ?? key;
+  }
+
+  /// Check if a language has built-in translations
+  static bool hasStaticTranslations(String code) {
+    return _localizedValues.containsKey(code);
+  }
+
+  /// Translate dynamic text or lookup key asynchronously using Sarvam AI
+  static Future<String> translateAsync({
+    required String textOrKey,
+    required String targetLanguage,
+    String sourceLanguage = 'en',
+  }) async {
+    if (targetLanguage == sourceLanguage || targetLanguage == 'en') {
+      return text(targetLanguage, textOrKey);
+    }
+
+    // Check static dictionary first
+    final staticMatch = _localizedValues[targetLanguage]?[textOrKey];
+    if (staticMatch != null) return staticMatch;
+
+    // Check dynamic cache
+    final cached = _dynamicCache[targetLanguage]?[textOrKey];
+    if (cached != null) return cached;
+
+    // Resolve English source string if textOrKey is a dictionary key
+    final sourceText = _localizedValues['en']?[textOrKey] ?? textOrKey;
+
+    // Call Sarvam.ai Translate API
+    final translated = await SarvamService.translate(
+      text: sourceText,
+      targetLanguage: targetLanguage,
+      sourceLanguage: sourceLanguage,
+    );
+
+    // Save in cache
+    _dynamicCache.putIfAbsent(targetLanguage, () => {})[textOrKey] = translated;
+    return translated;
+  }
+
+  /// Prefetch all core app translations for a selected language via Sarvam AI
+  static Future<void> prefetchTranslations(String targetLanguage) async {
+    if (targetLanguage == 'en' || hasStaticTranslations(targetLanguage)) {
+      return;
+    }
+
+    final enEntries = _localizedValues['en']!;
+    _dynamicCache.putIfAbsent(targetLanguage, () => {});
+
+    for (final entry in enEntries.entries) {
+      if (!_dynamicCache[targetLanguage]!.containsKey(entry.key)) {
+        final translated = await SarvamService.translate(
+          text: entry.value,
+          targetLanguage: targetLanguage,
+          sourceLanguage: 'en',
+        );
+        _dynamicCache[targetLanguage]![entry.key] = translated;
+      }
+    }
   }
 }
