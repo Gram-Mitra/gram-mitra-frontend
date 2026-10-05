@@ -5,14 +5,14 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class ApiEndpoints {
   /// Resolves standard development host for local emulator or web/desktop
   static String get defaultHost {
-    if (kIsWeb) return 'http://100.26.205.34:30442';
+    if (kIsWeb) return 'http://54.224.97.138:30442';
     try {
       if (Platform.isAndroid) {
         // Standard Android emulator loopback alias
-        return 'http://100.26.205.34:30442';
+        return 'http://54.224.97.138:30442';
       }
     } catch (_) {}
-    return 'http://100.26.205.34:30442';
+    return 'http://54.224.97.138:30442';
   }
 
   static String baseUrl = defaultHost;
